@@ -1,0 +1,206 @@
+@font-face {
+    font-family: "Miama";
+    src: url("Days.otf");
+    }
+
+body {
+    background-color: #000;
+    color: #FFF;
+    font-family: 'Days';
+    padding: 3px;
+    margin: 0px;
+
+}
+
+.wrapper {
+    width: 24%;
+    border-left: 1px dotted #666;
+    border-right: 1px dotted #666;
+    float: left;    
+}
+
+.content {
+    min-height: 600px;
+    font-size: 4.5em;
+    text-align: center;    
+}
+
+/* VALUES */
+.valueField {
+    border-right: 1px dotted #666;
+    min-height: 300px;
+    text-align: center;
+    font-size: 4vw;
+    padding-top: 100px;
+}
+
+.valueField div {
+    color: #666;    
+    text-align: center;
+    font-size: 3vw;
+    margin-top: -40px;
+}
+
+
+.lfoWaveBg {
+    display: block;
+    margin: 0 auto;
+    height: 200px;
+    width: 90%;
+}
+
+.lfoSine {
+    background-image: url('/sine.png');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.lfoSaw {
+    background-image: url('/saw.png');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.lfoSquare {
+    background-image: url('/square.png');
+    background-position: center;
+    background-repeat: no-repeat;
+}   
+.lfoTri {
+    background-image: url('/tri.png');
+    background-position: center;
+    background-repeat: no-repeat;
+} 
+
+
+/* buttons */
+.btnWrapper {
+    max-width: none;
+    margin-bottom: 10px;
+}
+.btnWrapperBottom {
+    max-width: none;
+    margin-bottom: 0px;
+}
+.mainWrapper {
+    max-width: none;
+    height: 310px;
+}
+.mainOption {
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+    height:330px;
+    font-size: 90px;
+    color: #CCC;
+    border-right: 1px dashed #333;
+}
+
+.btnBg {    
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    border-right: 4px solid #000;
+    height: 60px;
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+    background-color: #333;
+}
+
+.btnBg div {    
+    text-align: center;
+    font-weight: bold;
+    font-size: 2.5vw;
+    
+}
+
+
+
+.btnBgBottom {    
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+    border-right: 4px solid #000;
+    height: 90px;
+    background-color: #333;
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+}
+
+
+.btnColor_top {
+    background-color:#64AEED;
+    color: #FFF;    
+}
+.btnColor_bottom {
+    color:#F9AC44;
+    color: #FFF;    
+}
+
+
+.btnColor_track {
+    background-color:#F9AC44;
+    color: #FFF;    
+}
+.btnColor_edit {
+    background-color: rgb(255, 153, 0);
+    color: #000;    
+}
+.btnColor_lfo {
+    background-color: rgb(255, 153, 0);
+    color: #000;    
+}
+.btnColor_pattern {
+    background-color: rgb(255, 153, 0);
+    color: #000;    
+}
+
+
+.row {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+
+.container {
+    padding-left:  0px !important;
+    padding-right: 0px !important;
+}
+
+.mainSection {
+    display: block;
+    height: 300px;
+}
+
+.menuMain {
+    font-size: 80px;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 80px;    
+}
+
+.menuMainSub {
+    font-size: 50px;
+    color: #666;
+}
+
+
+.fileLoadSave {
+  display: block;
+  width: 600px; 
+  margin: 0 auto; 
+  padding-top: 80px;
+}
+
+.fileLabel {
+    font-size: 20px;
+    color: #CCC;
+}
+
+.fileInput {
+    font-size: 45px;
+    font-weight: normal;
+    border-bottom: 1px solid #666;
+    margin-top: 40px;
+    color: #FFF;
+    height: 65px;
+}

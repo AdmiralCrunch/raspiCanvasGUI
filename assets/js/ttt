@@ -1,0 +1,323 @@
+<script>
+
+/* NAV POINTER */
+var nav = 'splashscreen';
+            var actTrack = 0; // TODO: load last saved
+
+            /* TRACK PATTERN 64 */            
+            var patternNote = { 
+                note: false, 
+                range: false,
+                vel: 127,
+                pos: 0
+            };
+
+            var track = {
+                status: true, 
+                length: 36,
+                prActNote: prActNote,
+                prActRange: prActRange,
+                position: 1,
+                mode: 'seq',
+                pattern: [
+                    { 
+                        note: 0, 
+                        range: 0,
+                        vel: 127,
+                        pos: 1
+                    },
+                    { 
+                        note: 4, 
+                        range: 0,
+                        vel: 100,
+                        pos: 3
+                    },
+                    { 
+                        note: 4, 
+                        range: 0,
+                        vel: 50,
+                        pos: 6
+                    }
+                ]    
+            }; 
+
+            var tracks = [track, track, track, track, track, track, track, track];
+
+           
+            /* GENERATE PIANOROLL */
+            var pianoRollRangeMin = -2;
+            var pianoRollRangeMax = 8;
+            var pianoRollOctaveNotes = [
+                ['C', 'full'],
+                ['C#', 'half'],
+                ['D', 'full'],
+                ['D#', 'half'],
+                ['E', 'full'],
+                ['F', 'full'],
+                ['F#', 'half'],
+                ['G', 'full'],
+                ['G#', 'half'],
+                ['A', 'full'],
+                ['A#', 'half'],
+                ['B', 'full'],
+            ];    
+             
+            var prActNote = 0; // C
+            var prActRange = 0 // 0
+             
+            var prPos = 0;
+            
+
+            // GET WIDTH & HEIGHT
+            var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0); 
+
+            var BreakException = {};
+
+
+            function generatePR(actNote, actRange, notes) {
+                var i = 0;                    
+                var element = document.getElementById("pianoRollWrapper");
+                $('#pianoRollWrapper').html('');
+
+                var noteWidth = w / 17 - 1;
+                var prGeneratorStatus = false;
+
+                var scaleFrom = false;
+                var scaleTo = false;
+
+                // loop x2
+                for(t=0; t<=8; t++) {
+                    try {
+                        notes.forEach(function(note) {
+                            // if PR is full, exit
+                            if (i === 16)  { throw BreakException; }                                                                            
+                            console.log(pianoRollOctaveNotes[actNote][0] +' : '+ note[0]);                                                       
+                            scaleTo = note[0] + actRange; // make var for scale-menu 
+
+
+                            if(pianoRollOctaveNotes[actNote][0] == note[0]) {
+                                scaleFrom = pianoRollOctaveNotes[actNote][0] + actRange; // make var for scale-menu 
+                                prGeneratorStatus = true;
+                            }
+
+                            if(prGeneratorStatus === true) {
+                                var rowLAbel = document.createTextNode(note[0] + actRange);
+                                var rowWrapper = document.createElement("div");
+                                rowWrapper.className = 'prRowWrapper'; 
+                                
+                            
+
+                                for(x=0; x<=16; x++) {
+                                    if(x === 0) {
+                                        var helpBit = document.createElement("div");
+                                        helpBit.appendChild(rowLAbel);
+                                        helpBit.className = 'prRowBitLabel_' + note[1];
+                                        helpBit.id = 'prRowBitLabel_' + note[1];
+                                        helpBit.style.width = (noteWidth + 9) + "px";
+                                    } else {
+                                        var helpBit = document.createElement("div");
+                                        helpBit.className = 'prRowBit ' + note[1];
+                                        helpBit.style.width = noteWidth + "px";
+                                        helpBit.id = 'prRowBit_' + note[0] + '_' + actRange + '_' + x;
+
+                                        var noteInner = document.createElement("div");
+                                        noteInner.className = 'prNoteInner_' + note[1]; 
+                                        noteInner.id = 'prNoteInner_' + note[0] + '_' + actRange + '_' + x;
+                                        helpBit.appendChild(noteInner);   
+                                    }                                       
+                                    rowWrapper.appendChild(helpBit);                             
+                                }  
+                                element.appendChild(rowWrapper);                                 
+                                i++;
+                            }
+                                                        
+
+                            
+                        });                        
+                    } catch (e) {
+                        if (e !== BreakException) throw e;
+                    }
+                    
+                }
+
+            $('#trackLength').html(tracks[actTrack].length);
+            $('#trackScale').html(scaleFrom + ' - ' + scaleTo);
+            $('#trackPos').html(tracks[actTrack].position + ' - ' + (tracks[actTrack].position + 15));
+            $('#trackMode').html(tracks[actTrack].mode);
+
+            }
+            function prUp() {
+                if(prActNote == 11) {
+                    if(prActRange < pianoRollRangeMax) {
+                        prActRange++;
+                        prActNote = 0;
+                    }
+                } else {
+                    prActNote++;
+                }
+                generatePR(prActNote, prActRange, pianoRollOctaveNotes);
+            }
+
+            function prDown() {
+                if(prActNote == 0) {
+                    if(prActRange > pianoRollRangeMin) {
+                        prActRange--;
+                        prActNote = 11;
+                    }                        
+                } else {
+                    prActNote--;
+                }
+                generatePR(prActNote, prActRange, pianoRollOctaveNotes);
+            }
+
+             
+             /*
+             var playing;
+
+             function seq_play(noteWidth) {                    
+                 playing = setInterval(function(){ 
+                         movePrPos(noteWidth); 
+                         prPos++;  
+                         
+                     }, 250);               
+             }
+
+             function movePrPos(noteWidth) {                                         
+                 var prPosWrapper = document.getElementById('prPosWrapper'),
+                     style = window.getComputedStyle(prPosWrapper),
+                     left = parseInt(style.getPropertyValue('left'));                       
+                 if(prPos <= 15) {
+                     document.getElementById("prPosWrapper").style.left = noteWidth + 9 + prPos * noteWidth  + 'px';
+                 }  else {
+                     document.getElementById("prPosWrapper").style.left = noteWidth + 9 + 'px';
+                     prPos = 0;                     
+                 }
+                 
+             }
+            */
+
+            function setPattern() { 
+                tracks[actTrack].pattern.forEach(function(note) {
+                    $('#prNoteInner_'+pianoRollOctaveNotes[note.note][0]+'_'+note.range+'_'+note.pos).css({backgroundColor:'#FF5F4F'});
+                    
+                    var velOpacity = 1 / 127 * note.vel;
+                    $('#prNoteInner_'+pianoRollOctaveNotes[note.note][0]+'_'+note.range+'_'+note.pos).css({opacity:velOpacity});
+                    
+                });
+            }
+
+        
+            
+
+
+
+            generatePR(prActNote, prActRange, pianoRollOctaveNotes);
+
+            setPattern();
+            
+
+
+
+
+
+
+                 /* WEBSOCKET */
+                var connection = new WebSocket('ws://127.0.0.1:3000'); 
+
+                connection.onopen = function () {
+                    // connection.send('Ping from C');
+                };            
+                connection.onerror = function (error) {
+                    console.log('WebSocket Error ' + error);
+                };            
+                connection.onmessage = function (e) {                    
+                    var d = JSON.parse(e.data); 
+
+                    /* update loading-status */
+                    if(nav == 'splashscreen' && d.type == 'loading') { 
+                        $('#splashInfo').html('loading ' + d.value);  
+                    } 
+
+                    /* init mode */
+                    if(nav == 'splashscreen' && d.type == 'globalMode') {
+                        if(d.value == 'ctrl') {
+                            $('#seq_root').hide();
+                            $('#ctrl_root').show();                            
+                        }                            
+                        if(d.value == 'seq') {
+                            $('#seq_root').show();
+                            $('#ctrl_root').hide(); 
+                        }                    
+                    }                  
+                    
+                    /* LOADING OK - rediret to last saved trackMenu[i] */
+                    // TODO: load last saved
+                    if(nav == 'splashscreen' && d.type == 'loading' && d.value == 'ok') {
+                        console.log("LOADING OK -- GO TO trackMenu");
+                        $('#splashScreen').fadeOut(function() {
+                            $('#main').fadeIn();
+                            nav = 'trackSelect';
+                        });                        
+                    }                     
+                    
+
+                    /* update trackSelect */
+                    if(nav == 'trackSelect' && d.type == 'showMenu') { 
+                        
+                        actTrack = parseInt(d.value);
+                    } 
+
+
+                    /* update trackSelect */
+                    if(nav == 'trackSelect' && d.type == 'trackSelect') { 
+                        $('#splashInfo2').html('TRACK ' + d.value); 
+                        actTrack = parseInt(d.value);
+                    } 
+
+                    /* update trackMute */
+                    if(nav == 'trackSelect' && d.type == 'trackMute') {  
+                        if(tracks[parseInt(d.value)].status === true) {
+                            tracks[parseInt(d.value)].status = false;
+                            if(actTrack == parseInt(d.value)) {                                
+                                $('#splashInfo2').css({color: '#999'});                                
+                            }
+                        } else {
+                            tracks[parseInt(d.value)].status = true;
+                            if(actTrack == parseInt(d.value)) {
+                                $('#splashInfo2').css({color: '#FFF'});                                
+                            }
+                        }
+                    } 
+
+
+
+
+                    /* trackVolume */
+                    if(nav == 'trackSelect' && d.type == 'trackVolume') {                         
+                        $('#ctrlDashboard_trackNr').html(d.nr);
+                        $('#ctrlDashboard_trackCtrl').html(d.type);                        
+                        $('#ctrlDashboard_ctrlValue').html(d.value);                       
+                    } 
+
+                    /* trackBtn */
+                    if(nav == 'trackSelect' && d.type == 'trackBtn') {                         
+                        $('#ctrlDashboard_trackNr').html(d.nr);
+                        $('#ctrlDashboard_trackCtrl').html(d.type);
+                        if(d.value == 0) {
+                            $('#ctrlDashboard_ctrlValue').html('off');
+                        } else {
+                            $('#ctrlDashboard_ctrlValue').html('on');
+                        }
+                    } 
+
+                    /* trackFilter */
+                    if(nav == 'trackSelect' && d.type == 'trackFilter') {                         
+                        $('#ctrlDashboard_trackNr').html(d.nr);
+                        $('#ctrlDashboard_trackCtrl').html(d.type);                        
+                        $('#ctrlDashboard_ctrlValue').html(d.value);
+                    } 
+
+                };
+            
+        </script>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>  
+    <head>
+        <style>
+            @font-face {
+                font-family: "Miama";
+                src: url("/Days.otf");
+                }
+
+            body {                
+                color: #FFF;
+                font-family: 'Miama';
+                padding: 0px;
+                margin: 0px;
+
+            }
+        </style>
+        <link rel="stylesheet" type="text/css" href="/style.css" />
+    </head>
+
+    <body>
+
+        <canvas id="myCanvas" width="794" height="471" style="border:none; margin: 0px; padding: 0px;"></canvas>
+
+        <input type="hidden" id="actMode"/>
+        <input type="hidden" id="actNav"/>
+        <input type="hidden" id="displayActSceneVal"/>
+        <input type="hidden" id="displayTrackModeVal"/>
+
+       
+        <script src="/jquery-3.3.1.min.js"></script>
+        <script src="/menu.def.js"></script>
+        <script src="/menu.class.js"></script>
+        <script src="/websocket.js"></script>
+        <script>
+
+            var menu = new Menu(menuDef);
+
+            $('#ctrl').on('click', function() {
+                menu.createControllerGUI(menuDef.ctrl.main);
+            });
+
+            function updateSplashInfo(nr, val, val2, val3) {
+                menu.buildSplashscreen(val);
+            }
+
+            function initGlobalMode(nr, val, val2, val3) {
+                // set act mode/nav    
+                $('#actMode').val(val);    
+                $('#actNav').val('root');
+                
+                if(val == 'ctrl') {
+                    menu.createControllerGUI(menuDef.ctrl.main);
+                } else {
+                    menu.buildMenu(menuDef.ctrl.global);
+                }
+            }
+
+function moveShit(nr,val) {
+    console.log('INDEX.HTML: moveShit('+nr+', '+val+')');
+    menuDef.ctrl.main.tracks[nr].vol = val;
+    menu.createControllerGUI(menuDef.ctrl.main); 
+}
+
+            function changeGlobalMode(nr, val, val2, val3) {
+                $('#actMode').val(val);  
+                switch(val) {
+                    case "ctrl":
+                        menu.createControllerGUI(menuDef.ctrl.main);
+                    break;
+
+                    case "seq":
+                        menu.buildMenu(menuDef.seq.main);
+                    break;
+                } 
+            }
+
+            function showMenu(nr, val, val2, val3) { 
+                $('.menuWrapper').hide();
+                menu.buildMenu(menuDef[$('#actMode').val()][val]);               
+                $('#actNav').val(val);   
+            }
+
+            /* UPDATE CONTROL-ELEMENTS */
+
+            function updateCtrlFader(nr, val, val2, val3) { 
+                console.log('updateCtrlFader (' + nr + '): ' + val);
+                menuDef.ctrl.main.tracks[nr].vol = val;
+                menu.createControllerGUI(menuDef.ctrl.main);               
+            }
+
+            function updateCtrlBtn(nr, val, val2, val3) {                
+                menuDef.ctrl.main.tracks[nr].trackBtn = (val == 1) ? 'on' : 'off';
+                menu.createControllerGUI(menuDef.ctrl.main);
+            }
+            
+            function updateCtrlFilter(nr, val, val2, val3) {
+                menuDef.ctrl.main.tracks[nr].filter = val;
+                menu.createControllerGUI(menuDef.ctrl.main);
+            }
+
+            function updateCtrlLow(nr, val, val2, val3) {
+                menuDef.ctrl.main.tracks[nr].eqLow = val;
+                menu.createControllerGUI(menuDef.ctrl.main);
+            }
+
+            function updateCtrlMid(nr, val, val2, val3) {
+                menuDef.ctrl.main.tracks[nr].eqMid = val;
+                menu.createControllerGUI(menuDef.ctrl.main);
+            }
+
+            function updateCtrlHigh(nr, val, val2, val3) {
+                menuDef.ctrl.main.tracks[nr].eqHigh = val;
+                menu.createControllerGUI(menuDef.ctrl.main);
+            }
+
+            function updateCtrlEnc(nr, val, val2, val3) {
+                menuDef.ctrl.main.tracks[nr].fx = val;
+                menu.createControllerGUI(menuDef.ctrl.main);  
+            }
+
+            function muteTrack(nr, val, val2, val3) {
+                menuDef.ctrl.main.tracks[nr].state = 'muted';
+                menu.createControllerGUI(menuDef.ctrl.main);
+            }
+
+            function changeScene(nr, val, val2, val3) {
+                menuDef.ctrl.main.displayActSceneVal = val;
+                menu.createControllerGUI(menuDef.ctrl.main);
+            }
+
+            function setCtrlMode(nr, val, val2, val3) {
+                menuDef.ctrl.main.displayTrackModeVal = val;
+                // lock all control-elements
+                for(var i = 0; i <= 31; i++) {                  
+                    menuDef.ctrl.main.tracks[i].lock_vol = true;
+                    menuDef.ctrl.main.tracks[i].lock_filter = true;
+                    menuDef.ctrl.main.tracks[i].lock_eqLow = true;
+                    menuDef.ctrl.main.tracks[i].lock_eqMid = true;
+                    menuDef.ctrl.main.tracks[i].lock_eqHigh = true;
+                    menuDef.ctrl.main.tracks[i].lock_fx = true;
+                }
+                menu.createControllerGUI(menuDef.ctrl.main);   
+            }
+
+           
+
+            
+        </script>
+
+        
+
+    </body>
+</html>

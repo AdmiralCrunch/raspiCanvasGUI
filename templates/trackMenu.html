@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/bootstrap-grid.min.css" />
+        <link rel="stylesheet" type="text/css" href="/style.css" />
+        <script src="/jquery-3.3.1.min.js"></script>
+    </head>
+    <body>
+
+        <div class="container btnWrapper" id="btnWrapperTop">
+            <div class="row">
+                <div class="col-3 btnBg btnColor_top">
+                    EDIT    
+                </div> 
+                <div class="col-3 btnBg btnColor_top">
+                    LFO 1    
+                </div>  
+                <div class="col-3 btnBg btnColor_top">
+                    LFO 2  
+                </div>  
+                <div class="col-3 btnBg btnColor_top" style="border-right: none;">
+                     pattern   
+                </div>  
+            </div>            
+        </div>
+        
+        
+        <div class="pianoRollWrapper" id="pianoRollWrapper">
+            
+        </div>
+
+        <div class="container btnWrapper" id="btnWrapperTop">
+                <div class="row">
+                    <div class="col-3 btnBg btnColor_track">
+                        EDIT    
+                    </div> 
+                    <div class="col-3 btnBg btnColor_track">
+                        LFO 1    
+                    </div>  
+                    <div class="col-3 btnBg btnColor_track">
+                        LFO 2  
+                    </div>  
+                    <div class="col-3 btnBg btnColor_track">
+                         BLA   
+                    </div>  
+                </div>            
+            </div>
+
+            <div id="blaa">sdsdsdsdsd</div>
+            ---
+            <div id="blaa2">sdsdsdsdsd</div>
+
+        <script>
+
+           /* GENERATE PIANOROLL */
+                var pianoRollRangeMin = -2;
+                var pianoRollRangeMax = 8;
+                var pianoRollOctaveNotes = [
+                    ['C', 'full'],
+                    ['C#', 'half'],
+                    ['D', 'full'],
+                    ['D#', 'half'],
+                    ['E', 'full'],
+                    ['F', 'full'],
+                    ['F#', 'half'],
+                    ['G', 'full'],
+                    ['G#', 'half'],
+                    ['A', 'full'],
+                    ['A#', 'half'],
+                    ['B', 'full'],
+                ];    
+                
+                var prActNote = 0; // C
+                var prActRange = 0 // 0
+                
+                var prPos = 0;
+
+                var BreakException = {};
+
+                // GET WIDTH & HEIGHT
+                var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+               
+
+                generatePR(prActNote, prActRange, pianoRollOctaveNotes);
+
+                function generatePR(actNote, actRange, notes) {
+                    var i = 0;                    
+                    var element = document.getElementById("pianoRollWrapper");
+                    $('#pianoRollWrapper').html('');
+
+                    var noteWidth = w / 17 - 1;
+                    var prGeneratorStatus = false;
+
+                    // loop x2
+                    for(t=0; t<=8; t++) {
+                        try {
+                            notes.forEach(function(note) {
+                                // if PR is full, exit
+                                if (i === 16)  { throw BreakException; }                                                                            
+                                console.log(pianoRollOctaveNotes[actNote][0] +' : '+ note[0]);
+                                if(pianoRollOctaveNotes[actNote][0] == note[0]) {
+                                    
+                                    prGeneratorStatus = true;
+                                }
+
+                                if(prGeneratorStatus === true) {
+                                    var rowLAbel = document.createTextNode(note[0] + actRange);
+                                    var rowWrapper = document.createElement("div");
+                                    rowWrapper.className = 'prRowWrapper'; 
+                                    
+                                    for(x=0; x<=16; x++) {
+                                        if(x === 0) {
+                                            var helpBit = document.createElement("div");
+                                            helpBit.appendChild(rowLAbel);
+                                            helpBit.className = 'prRowBitLabel_' + note[1];
+                                            helpBit.id = 'prRowBitLabel_' + note[1];
+                                            helpBit.style.width = (noteWidth + 9) + "px";
+                                        } else {
+                                            var helpBit = document.createElement("div");
+                                            helpBit.className = 'prRowBit ' + note[1];
+                                            helpBit.style.width = noteWidth + "px";
+                                            helpBit.id = 'prRowBit_' + x;
+
+                                            var noteInner = document.createElement("div");
+                                            noteInner.className = 'prNoteInner_' + note[1]; 
+                                            helpBit.appendChild(noteInner);   
+                                        }                                       
+                                        rowWrapper.appendChild(helpBit);                             
+                                    }  
+                                    element.appendChild(rowWrapper);                                 
+                                    i++;
+                                }
+                                                            
+
+                                
+                            });                        
+                        } catch (e) {
+                            if (e !== BreakException) throw e;
+                        }
+                        
+                    }
+
+
+                }
+
+                function prUp() {
+                    if(prActNote == 11) {
+                        if(prActRange < pianoRollRangeMax) {
+                            prActRange++;
+                            prActNote = 0;
+                        }
+                    } else {
+                        prActNote++;
+                    }
+                    generatePR(prActNote, prActRange, pianoRollOctaveNotes);
+                }
+
+                function prDown() {
+                    if(prActNote == 0) {
+                        if(prActRange > pianoRollRangeMin) {
+                            prActRange--;
+                            prActNote = 11;
+                        }                        
+                    } else {
+                        prActNote--;
+                    }
+                    generatePR(prActNote, prActRange, pianoRollOctaveNotes);
+                }
+
+                /*
+                function generatePR2() {
+
+                    var i = 0;                    
+                    var element = document.getElementById("pianoRollWrapper");
+
+                    
+                    var noteWidth = w / 17 - 1;
+                    
+                    // loop x2
+                    for(t=0; t<=1; t++) {
+                        try {
+                            pianoRollOctaveNotes.forEach(function(note) {
+                                // if PR is full, exit
+                                if (i === 16)  { throw BreakException; }                                                                            
+                                
+                                var rowLAbel = document.createTextNode(note[0] + prActRange);
+                                var rowWrapper = document.createElement("div");
+                                rowWrapper.className = 'prRowWrapper';                                
+
+                                for(x=0; x<=16; x++) {
+                                    if(x === 0) {
+                                        var helpBit = document.createElement("div");
+                                        helpBit.appendChild(rowLAbel);
+                                        helpBit.className = 'prRowBitLabel_' + note[1];
+                                        helpBit.id = 'prRowBitLabel_' + note[1];
+                                        helpBit.style.width = (noteWidth + 9) + "px";
+                                    } else {
+                                        var helpBit = document.createElement("div");
+                                        helpBit.className = 'prRowBit ' + note[1];
+                                        helpBit.style.width = noteWidth + "px";
+                                        helpBit.id = 'prRowBit_' + x;
+
+                                        var noteInner = document.createElement("div");
+                                        noteInner.className = 'prNoteInner_' + note[1]; 
+                                        helpBit.appendChild(noteInner);   
+                                    }                                       
+                                    rowWrapper.appendChild(helpBit);                             
+                                }  
+                                element.appendChild(rowWrapper);                                 
+                                i++;
+                            });                        
+                        } catch (e) {
+                            if (e !== BreakException) throw e;
+                        }
+                        
+                    }   
+
+                   
+                }                
+*/
+
+                
+/*
+                var playing;
+
+                function seq_play(noteWidth) {                    
+                    playing = setInterval(function(){ 
+                            movePrPos(noteWidth); 
+                            prPos++;  
+                            
+                        }, 250);               
+                }
+
+                function movePrPos(noteWidth) {                                         
+                    var prPosWrapper = document.getElementById('prPosWrapper'),
+                        style = window.getComputedStyle(prPosWrapper),
+                        left = parseInt(style.getPropertyValue('left'));                       
+                    if(prPos <= 15) {
+                        document.getElementById("prPosWrapper").style.left = noteWidth + 9 + prPos * noteWidth  + 'px';
+                    }  else {
+                        document.getElementById("prPosWrapper").style.left = noteWidth + 9 + 'px';
+                        prPos = 0;
+                        
+                    }
+                    
+                }
+*/
+
+            </script>
+
+
+<button onclick="prUp();">up</button>
+        <button onclick="prDown();">down</button>
+    </body>
+
+</html> 
