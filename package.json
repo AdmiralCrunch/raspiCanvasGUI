@@ -15,7 +15,7 @@
     "fs": "0.0.1-security",
     "handlebars": "^4.0.11",
     "http": "0.0.0",
-    "pug": "^2.0.3",
+    "pug": "^3.0.1",
     "serialport": "^6.2.0",
     "websocket": "^1.0.28",
     "ws": "^5.1.1"
